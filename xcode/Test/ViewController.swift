@@ -493,22 +493,19 @@ class ViewController: NSViewController {
             sessionsAdded += 1
             totalSessions += 1
         }
+        
+        var allRunningApplications = NSWorkspace.shared.runningApplications.filter({ $0 != runningApp })
+        allRunningApplications.append(runningApp)
 
-        for runningApplication in NSWorkspace.shared.runningApplications {
+        for runningApplication in allRunningApplications {
             
             // Check if the application is in the exception list
             if (!ignoreApplication(application: runningApplication)) {
                 
                 // Ignore itself + only affect regular applications
-                if (runningApplication.activationPolicy == .regular && runningApplication.localizedName != "Later" && runningApplication != runningApp) {
+                if (runningApplication.activationPolicy == .regular && runningApplication.localizedName != "Later") {
                     addApplicationToSession(application: runningApplication)
                 }
-            }
-        }
-        
-        if (!ignoreApplication(application: runningApp)) {
-            if (runningApp.activationPolicy == .regular && runningApp.localizedName != "Later") {
-                addApplicationToSession(application: runningApp)
             }
         }
         
