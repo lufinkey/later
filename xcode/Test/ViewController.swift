@@ -465,6 +465,34 @@ class ViewController: NSViewController {
         let runningApp = NSWorkspace.shared.frontmostApplication!
         
         NSApp.setActivationPolicy(.regular)
+        
+        func addApplicationToSession(application: NSRunningApplication) {
+            array.append(application.executableURL!.absoluteString)
+            arrayNames.append(application.localizedName!)
+            
+            // Only close if "keep windows open" checkbox is disabled
+            if (keepWindowsOpen.state == .off) {
+                application.hide()
+            } else {
+                if (application.localizedName != "Finder") {
+                    application.terminate()
+                }
+                lastState = true;
+            }
+            
+            // Get application names for session label
+            if (sessionName == "") {
+                sessionName = application.localizedName!
+                sessionFull = application.localizedName!
+            } else if (sessionsAdded <= 3) {
+                sessionName += ", "+application.localizedName!
+            } else {
+                sessionsRemaining += 1
+            }
+            sessionFull += ", "+application.localizedName!
+            sessionsAdded += 1
+            totalSessions += 1
+        }
 
         for runningApplication in NSWorkspace.shared.runningApplications {
             
@@ -473,61 +501,14 @@ class ViewController: NSViewController {
                 
                 // Ignore itself + only affect regular applications
                 if (runningApplication.activationPolicy == .regular && runningApplication.localizedName != "Later" && runningApplication != runningApp) {
-                    array.append(runningApplication.executableURL!.absoluteString)
-                    arrayNames.append(runningApplication.localizedName!)
-                    
-                    // Only close if "keep windows open" checkbox is disabled
-                    if (keepWindowsOpen.state == .off) {
-                        runningApplication.hide()
-                    } else {
-                        if (runningApplication.localizedName != "Finder") {
-                            runningApplication.terminate()
-                        }
-                        lastState = true;
-                    }
-                    
-                    // Get application names for session label
-                    if (sessionName == "") {
-                        sessionName = runningApplication.localizedName!
-                        sessionFull = runningApplication.localizedName!
-                    } else if (sessionsAdded <= 3) {
-                        sessionName += ", "+runningApplication.localizedName!
-                    } else {
-                        sessionsRemaining += 1
-                    }
-                    sessionFull += ", "+runningApplication.localizedName!
-                    sessionsAdded += 1
-                    totalSessions += 1
+                    addApplicationToSession(application: runningApplication)
                 }
             }
         }
         
         if (!ignoreApplication(application: runningApp)) {
             if (runningApp.activationPolicy == .regular && runningApp.localizedName != "Later") {
-                array.append(runningApp.executableURL!.absoluteString)
-                arrayNames.append(runningApp.localizedName!)
-                
-                // Only close if "keep windows open" checkbox is disabled
-                if (keepWindowsOpen.state == .off) {
-                    runningApp.hide()
-                } else {
-                    if (runningApp.localizedName != "Finder") {
-                        runningApp.terminate()
-                    }
-                    lastState = true;
-                }
-                // Get application names for session label
-                if (sessionName == "") {
-                    sessionName = runningApp.localizedName!
-                    sessionFull = runningApp.localizedName!
-                } else if (sessionsAdded <= 3) {
-                    sessionName += ", "+runningApp.localizedName!
-                } else {
-                    sessionsRemaining += 1
-                }
-                sessionFull += ", "+runningApp.localizedName!
-                sessionsAdded += 1
-                totalSessions += 1
+                addApplicationToSession(application: runningApp)
             }
         }
         
