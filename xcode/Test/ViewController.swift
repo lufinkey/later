@@ -38,6 +38,8 @@ class ViewController: NSViewController {
     let settingsMenu = NSMenu()
     var count: Double = 0.0
     
+    let ignoredApplications =
+        ["Finder", "Activity Monitor", "System Preferences", "App Store"]
     
     @IBOutlet weak var boxHeight: NSLayoutConstraint!
     @IBOutlet weak var topBoxSpacing: NSLayoutConstraint!
@@ -179,7 +181,7 @@ class ViewController: NSViewController {
     func checkAnyWindows() {
         var totalSessions = 0
         for runningApplication in NSWorkspace.shared.runningApplications {
-            if ((ignoreFinder.state == .on && (runningApplication.localizedName != "Finder" && runningApplication.localizedName != "Activity Monitor" && runningApplication.localizedName != "System Preferences" && runningApplication.localizedName != "App Store")) || ignoreFinder.state == .off) {
+            if ((ignoreFinder.state == .on && !ignoredApplications.contains(runningApplication.localizedName ?? "")) || ignoreFinder.state == .off) {
                 if (runningApplication.activationPolicy == .regular) {
                     totalSessions += 1
                 }
@@ -459,7 +461,7 @@ class ViewController: NSViewController {
         for runningApplication in NSWorkspace.shared.runningApplications {
             
             // Check if the application is in the exception list
-            if ((ignoreFinder.state == .on && (runningApplication.localizedName != "Finder" && runningApplication.localizedName != "Activity Monitor" && runningApplication.localizedName != "System Preferences" && runningApplication.localizedName != "App Store")) || ignoreFinder.state == .off) {
+            if ((ignoreFinder.state == .on && !ignoredApplications.contains(runningApplication.localizedName ?? "")) || ignoreFinder.state == .off) {
                 
                 // Ignore itself + only affect regular applications
                 if (runningApplication.activationPolicy == .regular && runningApplication.localizedName != "Later" && runningApplication != runningApp) {
@@ -492,7 +494,7 @@ class ViewController: NSViewController {
             }
         }
         
-        if ((ignoreFinder.state == .on && (runningApp.localizedName != "Finder" && runningApp.localizedName != "Activity Monitor" && runningApp.localizedName != "System Preferences" && runningApp.localizedName != "App Store")) || ignoreFinder.state == .off) {
+        if ((ignoreFinder.state == .on && !ignoredApplications.contains(runningApp.localizedName ?? "")) || ignoreFinder.state == .off) {
             if (runningApp.activationPolicy == .regular && runningApp.localizedName != "Later") {
                 array.append(runningApp.executableURL!.absoluteString)
                 arrayNames.append(runningApp.localizedName!)
@@ -566,7 +568,7 @@ class ViewController: NSViewController {
         // Check if apps are to be terminated as opposed to hiding them
         if (closeApps.state == .on) {
             for runningApplication in NSWorkspace.shared.runningApplications {
-                if ((ignoreFinder.state == .on && (runningApplication.localizedName != "Finder" && runningApplication.localizedName != "Activity Monitor" && runningApplication.localizedName != "System Preferences" && runningApplication.localizedName != "App Store")) || ignoreFinder.state == .off) {
+                if ((ignoreFinder.state == .on && !ignoredApplications.contains(runningApplication.localizedName ?? "")) || ignoreFinder.state == .off) {
                     if (runningApplication.activationPolicy == .regular && runningApplication.localizedName != "Terminal") {
                         runningApplication.terminate()
                     }
