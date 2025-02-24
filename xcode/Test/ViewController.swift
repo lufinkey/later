@@ -82,8 +82,15 @@ class ViewController: NSViewController {
         if (ignoreFinder.state == .off) {
             return false
         }
-    
-        return ignoredApplications.contains(application.bundleIdentifier ?? "")
+        guard let bundleId = application.bundleIdentifier else {
+            return false
+        }
+        for ignoredBundleId in ignoredApplications {
+            if(ignoredBundleId.caseInsensitiveCompare(bundleId) == .orderedSame) {
+                return true
+            }
+        }
+        return false
     }
     
     var observers = [NSKeyValueObservation]()
