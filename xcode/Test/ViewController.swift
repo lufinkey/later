@@ -38,8 +38,12 @@ class ViewController: NSViewController {
     let settingsMenu = NSMenu()
     var count: Double = 0.0
     
-    let ignoredApplications =
-        ["Finder", "Activity Monitor", "System Preferences", "App Store"]
+    let ignoredApplications = [
+        "com.apple.finder",
+        "com.apple.ActivityMonitor",
+        "com.apple.systempreferences",
+        "com.apple.AppStore"
+    ]
     
     @IBOutlet weak var boxHeight: NSLayoutConstraint!
     @IBOutlet weak var topBoxSpacing: NSLayoutConstraint!
@@ -79,7 +83,7 @@ class ViewController: NSViewController {
             return false
         }
     
-        return ignoredApplications.contains(application.localizedName ?? "")
+        return ignoredApplications.contains(application.bundleIdentifier ?? "")
     }
     
     var observers = [NSKeyValueObservation]()
