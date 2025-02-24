@@ -38,7 +38,7 @@ class ViewController: NSViewController {
     let settingsMenu = NSMenu()
     var count: Double = 0.0
     
-    let ignoredApplications = [
+    var ignoredApplications = [
         "com.apple.finder",
         "com.apple.ActivityMonitor",
         "com.apple.systempreferences",
@@ -97,6 +97,10 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        #if DEBUG
+        ignoredApplications.append("com.apple.dt.Xcode")
+        #endif
         
         preview.layer?.cornerRadius = 15;
         preview.layer?.borderWidth = 3;
