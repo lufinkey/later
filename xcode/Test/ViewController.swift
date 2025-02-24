@@ -87,6 +87,10 @@ class ViewController: NSViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        preview.layer?.cornerRadius = 15;
+        preview.layer?.borderWidth = 3;
+        preview.clipsToBounds = true;
+        
         if (LaunchAtLogin.isEnabled) {
             checkbox.state = .on
         } else {
@@ -147,6 +151,10 @@ class ViewController: NSViewController {
                 self.checkAnyWindows()
             }
         ]
+    }
+    
+    @objc func imageClick(_ sender: Any) {
+        print("imageClick")
     }
     
     @objc func counter() {
